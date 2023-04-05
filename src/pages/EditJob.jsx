@@ -2,7 +2,10 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { SideMenu } from "../components";
-import { useEditJobMutation } from "../redux/features/apiSlice";
+import {
+  useEditJobMutation,
+  useGetJobsQuery,
+} from "../redux/features/apiSlice";
 
 export default function EditJob() {
   const { selectedJob } = useSelector((state) => state.jobs);
@@ -12,6 +15,7 @@ export default function EditJob() {
   const [editSalary, setEditSalary] = React.useState(salary);
   const [editDeadline, setEditDeadline] = React.useState(deadline);
   const [editJob, { isLoading, isError, isSuccess }] = useEditJobMutation();
+  const { refetch } = useGetJobsQuery();
 
   const handleForm = (e) => {
     e.preventDefault();
@@ -24,6 +28,9 @@ export default function EditJob() {
         editDeadline,
       },
     });
+    if (isSuccess) {
+      refetch();
+    }
   };
   const toasting = () => {
     if (isError) {

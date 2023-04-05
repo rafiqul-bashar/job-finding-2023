@@ -1,7 +1,7 @@
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { SideMenu } from "../components";
-import { useAddJobMutation } from "../redux/features/apiSlice";
+import { useAddJobMutation, useGetJobsQuery } from "../redux/features/apiSlice";
 
 export default function AddNewJob() {
   const [title, setTitle] = React.useState("");
@@ -9,6 +9,8 @@ export default function AddNewJob() {
   const [salary, setSalary] = React.useState(6000);
   const [deadline, setDeadline] = React.useState("");
   const [addJob, { isLoading, isSuccess, isError }] = useAddJobMutation();
+  const { refetch } = useGetJobsQuery();
+
   const resetForm = () => {
     setTitle("");
     setType("");
@@ -24,7 +26,10 @@ export default function AddNewJob() {
       deadline,
       salary,
     });
-    resetForm();
+    if (isSuccess) {
+      resetForm();
+      refetch();
+    }
   };
 
   const toasting = () => {
